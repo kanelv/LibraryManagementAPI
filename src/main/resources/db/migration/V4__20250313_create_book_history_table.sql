@@ -12,7 +12,7 @@ CREATE TABLE borrowing_history (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_borrowing_member FOREIGN KEY (member_id) REFERENCES user(id) ON DELETE CASCADE,
+    CONSTRAINT fk_borrowing_member FOREIGN KEY (member_id) REFERENCES member(id) ON DELETE CASCADE,
     CONSTRAINT fk_borrowing_book FOREIGN KEY (book_id) REFERENCES book(id) ON DELETE CASCADE
 );
 
