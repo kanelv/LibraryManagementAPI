@@ -1,13 +1,12 @@
-package com.kane.librarymanagement.ia.database.posgresql.entities;
+package com.kane.librarymanagement.infrastructure.persistence.jpa.entities;
 
+import com.kane.librarymanagement.domain.enums.RoleType;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +14,9 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @ToString(exclude = {"borrowedBooks"})
 @Entity
@@ -22,7 +24,8 @@ import java.util.List;
     name="user",
     indexes = {
         @Index(name = "idx_username", columnList = "username"),
-        @Index(name = "idx_phoneNumber", columnList = "phoneNumber")
+        @Index(name = "idx_phoneNumber", columnList = "phoneNumber"),
+        @Index(name = "idx_email", columnList = "email")
     },
     uniqueConstraints = {
         @UniqueConstraint(name = "uc_username_phoneNumber", columnNames = {"username", "phoneNumber"})
@@ -40,6 +43,19 @@ public class User {
   @Column(nullable = false, length = 15)
   private String phoneNumber;
 
+  @Column(unique=true, nullable = false, length = 50)
+  private String email;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "role_type", nullable = false)
+  private RoleType roleType;
+
+  @Column(name = "max_book_number")
+  private Integer maxBookNumber;
+
+  @Column(name = "max_borrow_duration")
+  private Integer maxBorrowDuration;
+
   @Column(nullable = false)
   private String password;
 
@@ -49,8 +65,14 @@ public class User {
   @Column(length = 50)
   private String lastName;
 
-  @Column(length = 255)
+  @Column()
   private String address;
+
+  @Column(nullable = false)
+  private Boolean active = true;
+
+  @Column(nullable = false)
+  private LocalDate membershipDate = LocalDate.now();
 
   @CreationTimestamp
   @Column(name = "created_at", updatable = false)
@@ -60,10 +82,6 @@ public class User {
   @Column(name = "updated_at")
   private OffsetDateTime updatedAt;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "role_id") // Foreign key in Role table
-  private Role role;
-
   // Many-to-many relationship with custom join table
   @ManyToMany
   @JoinTable(
@@ -72,23 +90,4 @@ public class User {
       inverseJoinColumns = @JoinColumn(name = "book_id")  // Custom foreign key for Book
   )
   private List<Book> borrowedBooks = new ArrayList<>();
-
-  // for JPA only, no use
-  public User() {}
-
-  public User(
-      String username,
-      String phoneNumber,
-      String password,
-      String firstName,
-      String lastName,
-      String address
-  ) {
-    this.username = username;
-    this.phoneNumber = phoneNumber;
-    this.password = password;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.address = address;
-  }
 }
