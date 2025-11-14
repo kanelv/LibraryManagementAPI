@@ -1,7 +1,7 @@
-package com.kane.librarymanagement.application.user.dto;
+package com.kane.librarymanagement.application.auth.dto;
 
-import com.kane.librarymanagement.domain.enums.RoleType;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateUserRequest {
+public class RegisterRequest {
   @NotBlank(message = "Username is required")
   @Size(max = 100)
   private String username;
@@ -36,7 +36,4 @@ public class CreateUserRequest {
 
   @Size(max = 255)
   private String address;
-
-  // Optional: If not provided, defaults to USER role
-  private RoleType roleType;
 }

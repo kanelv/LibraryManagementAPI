@@ -1,11 +1,15 @@
 package com.kane.librarymanagement.interfaces.rest.controllers;
 
-import com.kane.librarymanagement.application.auth.usecases.SignInUseCase;
+import com.kane.librarymanagement.application.auth.dto.RegisterRequest;
 import com.kane.librarymanagement.application.auth.dto.SignInRequest;
+import com.kane.librarymanagement.application.auth.usecases.RegisterUseCase;
+import com.kane.librarymanagement.application.auth.usecases.SignInUseCase;
+import com.kane.librarymanagement.application.user.dto.UserResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +24,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthController {
   private final SignInUseCase signInUseCase;
+  private final RegisterUseCase registerUseCase;
+
+  @PostMapping("/register")
+  public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
+    UserResponse response = registerUseCase.execute(request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
 
   @PostMapping("/sign-in")
   public ResponseEntity<?> signIn(

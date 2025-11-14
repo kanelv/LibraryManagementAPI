@@ -1,30 +1,25 @@
-package com.kane.librarymanagement.application.user.usecases;
+package com.kane.librarymanagement.application.auth.usecases;
 
-import com.kane.librarymanagement.application.user.dto.CreateUserRequest;
+import com.kane.librarymanagement.application.auth.dto.RegisterRequest;
 import com.kane.librarymanagement.application.user.dto.UserResponse;
 import com.kane.librarymanagement.application.user.services.UserCreationService;
-import com.kane.librarymanagement.domain.enums.RoleType;
 import com.kane.librarymanagement.domain.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Use case for admin-controlled user creation
- * Allows admins to create users with any role (ADMIN, USER, GUEST)
+ * Use case for public user registration
+ * Creates new user accounts with USER role by default
  */
 @Service
 @RequiredArgsConstructor
-public class CreateUserUseCase {
+public class RegisterUseCase {
   private final UserCreationService userCreationService;
 
   @Transactional
-  public UserResponse execute(CreateUserRequest request) {
-    // Determine role: use provided roleType or default to USER
-    RoleType roleType = request.getRoleType() != null ? request.getRoleType() : RoleType.USER;
-    Role role = Role.fromType(roleType);
-
-    // Delegate to shared service
+  public UserResponse execute(RegisterRequest request) {
+    // Delegate to shared service with USER role (public registration always gets USER role)
     return userCreationService.createUser(
         request.getUsername(),
         request.getPhoneNumber(),
@@ -33,7 +28,7 @@ public class CreateUserUseCase {
         request.getFirstName(),
         request.getLastName(),
         request.getAddress(),
-        role
+        Role.user()  // Always USER role for public registration
     );
   }
 }
