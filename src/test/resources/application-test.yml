@@ -1,0 +1,40 @@
+# Test Profile Configuration
+# Uses H2 in-memory database for fast, isolated testing
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+        show_sql: false
+    show-sql: false
+
+  h2:
+    console:
+      enabled: false
+
+  # Disable Flyway for tests (we use JPA auto-create)
+  flyway:
+    enabled: false
+
+# JWT Configuration for tests
+jwt:
+  secret-key: test-secret-key-for-testing-purposes-only-minimum-256-bits
+  expiration-time: 86400000
+  issuer: Test Library System
+
+# Logging
+logging:
+  level:
+    com.kane.librarymanagement: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

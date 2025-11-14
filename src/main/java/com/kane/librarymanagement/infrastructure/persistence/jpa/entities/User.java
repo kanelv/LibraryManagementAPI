@@ -21,7 +21,7 @@ import java.util.List;
 @ToString(exclude = {"borrowedBooks"})
 @Entity
 @Table(
-    name="user",
+    name="\"user\"",  // Quoted to handle reserved keyword in H2
     indexes = {
         @Index(name = "idx_username", columnList = "username"),
         @Index(name = "idx_phoneNumber", columnList = "phoneNumber"),
