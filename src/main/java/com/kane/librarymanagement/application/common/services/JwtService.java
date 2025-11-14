@@ -38,7 +38,7 @@ public class JwtService {
     this.expirationTime = expirationTime;
     this.issuer = issuer;
     this.secretKey = secretKey;
-    this.HMAC_SHA_KEY = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    this.HMAC_SHA_KEY = Keys.hmacShaKeyFor(this.secretKey.getBytes(StandardCharsets.UTF_8));
   }
 
   private String createToken(Map<String, Object> claims, String username) {
@@ -53,11 +53,27 @@ public class JwtService {
 
   public String generateToken(User user) {
     Map<String, Object> claims = new HashMap<>();
+    // Include role in JWT claims for authorization
+    claims.put("role", user.getRole().roleType().name());
+    claims.put("userId", user.getId().value());
     return createToken(claims, user.getUsername());
   }
 
   private Claims extractAllClaims(String token) {
-    return Jwts.parser().decryptWith(HMAC_SHA_KEY).build().parseSignedClaims(token).getPayload();
+    // Fix: Use verifyWith for signed tokens (not decryptWith which is for encrypted tokens)
+    return Jwts.parser()
+        .verifyWith(HMAC_SHA_KEY)
+        .build()
+        .parseSignedClaims(token)
+        .getPayload();
+  }
+
+  public String extractRole(String token) {
+    return extractClaim(token, claims -> claims.get("role", String.class));
+  }
+
+  public Long extractUserId(String token) {
+    return extractClaim(token, claims -> claims.get("userId", Long.class));
   }
 
   public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -85,4 +101,3 @@ public class JwtService {
     }
   }
 }
-
