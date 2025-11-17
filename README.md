@@ -66,7 +66,7 @@ This project follows **Clean Architecture** with **DDD** tactical patterns, orga
 
 ### Security
 - **Spring Security** 6
-- **JJWT** (JWT token-based authentication)
+- **JWT** (JWT token-based authentication)
 - **BCrypt** (Password encryption)
 
 ### Development Tools
