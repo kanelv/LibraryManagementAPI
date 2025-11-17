@@ -497,4 +497,4 @@ When contributing, ensure:
 
 ## License
 
-This project is for educational and demonstration purposes.
+MIT License
